@@ -31,7 +31,8 @@ app.include_router(api_router, prefix="/api/v1")
 async def health_check():
     return {"status": "healthy"}
 
+
 # Create database tables on startup
 @app.on_event("startup")
 async def startup():
-    await create_tables()
+    Base.metadata.create_all(bind=engine)

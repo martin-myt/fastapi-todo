@@ -1,53 +1,77 @@
+version: '3.8'
+
 services:
   # Development service with hot reload
   app-dev:
     build:
       context: .
       dockerfile: Dockerfile
+      target: development
     ports:
-      - "8000:8000"
+      - "3000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
     volumes:
       - .:/app
-    environment:
-      - ENVIRONMENT=development
     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
 
   # Production service
   app:
     build:
       context: .
       dockerfile: Dockerfile
+      target: production
     ports:
-      - "8000:8000"
+      - "3001:8000"
     environment:
-      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+    volumes:
+      - .:/app
     restart: unless-stopped
+    depends_on:
+      - db
 
   # Test service
   test:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - INSTALL_DEV=true
+      target: test
     volumes:
       - .:/app
+    command: poetry run pytest
     environment:
-      - ENVIRONMENT=test
-      - PYTHONPATH=/app
-    command: poetry run pytest -v --cov=app
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+    depends_on:
+      - db
 
   # Frontend development service
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.frontend
+      dockerfile: Dockerfile
     ports:
       - "5173:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules
     environment:
-      - VITE_API_URL=http://localhost:8000
+      - VITE_API_URL=http://localhost:3000/api/v1
     depends_on:
-      - app-dev 
+      - app-dev
+
+  db:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data: 
