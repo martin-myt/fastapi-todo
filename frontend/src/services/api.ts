@@ -1,4 +1,4 @@
-import { CreateTodoDto, Todo, TodosResponse, UpdateTodoDto } from '../types/todo';
+import { CreateTodoDto, Todo, UpdateTodoDto, GetTodosResponse } from '../types/todo';
 
 declare global {
   interface ImportMetaEnv {
@@ -9,7 +9,7 @@ declare global {
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 export const api = {
-  async getTodos(page: number = 1, size: number = 10): Promise<TodosResponse> {
+  async getTodos(page: number = 1, size: number = 10): Promise<GetTodosResponse> {
     const response = await fetch(`${API_URL}/todos/?page=${page}&size=${size}`);
     if (!response.ok) {
       throw new Error('Failed to fetch todos');

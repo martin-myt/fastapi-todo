@@ -68,7 +68,7 @@ export function TodoItem({ todo, onUpdate, onDelete, onEdit }: TodoItemProps) {
           )}
           <p className="text-sm text-gray-500 mt-2">
             Created: {new Date(todo.created_at).toLocaleDateString()}
-            {todo.updated_at && ` • Updated: ${new Date(todo.updated_at).toLocaleDateString()}`}
+            {' • Updated: '}{new Date(todo.updated_at).toLocaleDateString()}
           </p>
         </div>
         <div className="flex gap-2 ml-4">
@@ -77,6 +77,9 @@ export function TodoItem({ todo, onUpdate, onDelete, onEdit }: TodoItemProps) {
             className={`p-1 rounded-full ${
               todo.completed ? 'text-green-600 hover:text-green-700' : 'text-gray-400 hover:text-gray-500'
             }`}
+            role="checkbox"
+            aria-checked={todo.completed}
+            aria-label="Toggle completion"
           >
             {todo.completed ? (
               <CheckCircleIcon className="h-6 w-6" />
@@ -87,12 +90,14 @@ export function TodoItem({ todo, onUpdate, onDelete, onEdit }: TodoItemProps) {
           <button
             onClick={() => setIsEditing(true)}
             className="p-1 rounded-full text-blue-600 hover:text-blue-700"
+            aria-label="Edit todo"
           >
             <PencilIcon className="h-6 w-6" />
           </button>
           <button
             onClick={() => onDelete(todo.id)}
             className="p-1 rounded-full text-red-600 hover:text-red-700"
+            aria-label="Delete todo"
           >
             <TrashIcon className="h-6 w-6" />
           </button>
