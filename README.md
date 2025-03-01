@@ -1,4 +1,6 @@
-# FastAPI Todo List Application
+# FastAPI Todo Application
+
+[![codecov](https://codecov.io/gh/YOUR_GITHUB_USERNAME/fastapi-todo/branch/main/graph/badge.svg)](https://codecov.io/gh/YOUR_GITHUB_USERNAME/fastapi-todo)
 
 A modern, fast, and production-ready Todo List API built with FastAPI, SQLAlchemy, and Poetry.
 
@@ -11,6 +13,8 @@ A modern, fast, and production-ready Todo List API built with FastAPI, SQLAlchem
 - Modern dependency management with Poetry
 - Code quality tools (ruff, black)
 - API documentation with Swagger UI
+- GitHub Actions CI/CD pipeline
+- Code coverage reporting with Codecov
 
 ## Requirements
 
@@ -21,7 +25,7 @@ A modern, fast, and production-ready Todo List API built with FastAPI, SQLAlchem
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/YOUR_GITHUB_USERNAME/fastapi-todo.git
 cd fastapi-todo
 ```
 
@@ -56,7 +60,7 @@ API documentation (Swagger UI) will be available at `http://localhost:8000/docs`
 ## Running Tests
 
 ```bash
-poetry run pytest
+poetry run pytest -v --cov=app
 ```
 
 ## Code Quality
@@ -97,3 +101,14 @@ fastapi-todo/
 │   
 ├── pyproject.toml
 └── README.md 
+```
+
+## API Documentation
+
+Once the application is running, you can access:
+- Swagger UI documentation at `http://localhost:8000/docs`
+- ReDoc documentation at `http://localhost:8000/redoc`
+
+## License
+
+MIT
