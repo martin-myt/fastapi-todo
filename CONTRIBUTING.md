@@ -4,6 +4,8 @@ Thank you for your interest in contributing to FastAPI Todo! This document provi
 
 ## Development Setup
 
+### Backend Setup
+
 1. Fork the repository and clone your fork:
 ```bash
 git clone https://github.com/your-username/fastapi-todo.git
@@ -25,6 +27,23 @@ poetry install
 poetry shell
 ```
 
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create `.env` file:
+```bash
+echo "VITE_API_URL=http://localhost:3000/api/v1" > .env
+```
+
 ## Development Workflow
 
 1. Create a new branch for your feature or bugfix:
@@ -34,24 +53,45 @@ git checkout -b feature-name
 
 2. Make your changes, following our coding standards:
    - Use meaningful variable and function names
-   - Write docstrings for functions and classes
-   - Follow PEP 8 style guidelines
+   - Write docstrings and comments where necessary
+   - Follow the appropriate style guidelines for each language
    - Keep functions focused and single-purpose
-   - Add type hints to function parameters and return values
+   - Add appropriate type annotations
 
 3. Run tests to ensure your changes haven't broken anything:
+
+Backend:
 ```bash
 poetry run pytest -v --cov=app
 ```
 
+Frontend:
+```bash
+cd frontend && npm test
+```
+
 4. Format your code:
+
+Backend:
 ```bash
 poetry run black .
 ```
 
-5. Run the linter:
+Frontend:
+```bash
+npm run lint
+```
+
+5. Run the linters:
+
+Backend:
 ```bash
 poetry run ruff check .
+```
+
+Frontend:
+```bash
+npm run lint
 ```
 
 6. Commit your changes:
@@ -84,11 +124,20 @@ git push origin feature-name
 
 ## Testing Guidelines
 
+### Backend Testing
 - Write tests for all new features and bug fixes
 - Maintain or improve code coverage
 - Include both positive and negative test cases
 - Test edge cases and error conditions
 - Use meaningful test names that describe the behavior being tested
+
+### Frontend Testing
+- Write component tests using React Testing Library
+- Test both success and error states
+- Test loading states and user interactions
+- Mock API calls appropriately
+- Test accessibility features
+- Ensure responsive design works correctly
 
 ## Code Style Guidelines
 
@@ -98,6 +147,15 @@ git push origin feature-name
 - Use f-strings for string formatting
 - Keep functions focused and under 50 lines where possible
 - Use meaningful variable and function names
+
+### TypeScript/React
+- Use TypeScript types/interfaces
+- Follow ESLint configuration
+- Use functional components and hooks
+- Keep components focused and reusable
+- Follow React best practices
+- Use proper prop types
+- Handle errors gracefully
 
 ### FastAPI
 - Use Pydantic models for request/response validation
@@ -111,12 +169,21 @@ git push origin feature-name
 - Write efficient queries
 - Handle database errors appropriately
 
+### CSS/Tailwind
+- Follow BEM naming convention when not using Tailwind
+- Keep styles modular and reusable
+- Use Tailwind's utility classes effectively
+- Maintain responsive design principles
+- Follow accessibility guidelines
+
 ## Documentation
 
 - Update README.md if you add new features or change existing ones
 - Document API endpoints in docstrings
 - Include example requests and responses
 - Update requirements if you add new dependencies
+- Document frontend components and hooks
+- Include JSDoc comments for TypeScript functions
 
 ## Questions or Problems?
 
