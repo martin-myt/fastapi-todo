@@ -16,6 +16,7 @@ engine = create_engine(
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 @pytest.fixture
 def test_db():
     Base.metadata.create_all(bind=engine)
@@ -26,6 +27,7 @@ def test_db():
         db.close()
         Base.metadata.drop_all(bind=engine)
 
+
 @pytest.fixture
 def client(test_db):
     def override_get_db():
@@ -33,10 +35,11 @@ def client(test_db):
             yield test_db
         finally:
             test_db.close()
-    
+
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
     app.dependency_overrides.clear()
+
 
 @pytest.fixture
 def sample_todo(client):
@@ -45,16 +48,18 @@ def sample_todo(client):
         json={
             "title": "Test todo",
             "description": "Test description",
-            "completed": False
+            "completed": False,
         },
     )
     return response.json()
+
 
 def test_health_check(client):
     """Test the health check endpoint"""
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "healthy"}
+
 
 def test_create_todo(client):
     """Test creating a todo item"""
@@ -63,7 +68,7 @@ def test_create_todo(client):
         json={
             "title": "Test todo",
             "description": "Test description",
-            "completed": False
+            "completed": False,
         },
     )
     assert response.status_code == 201
@@ -75,26 +80,23 @@ def test_create_todo(client):
     assert "created_at" in data
     assert "updated_at" in data
 
+
 def test_create_todo_validation(client):
     """Test validation when creating a todo"""
     # Test missing title
     response = client.post(
         "/api/v1/todos/",
-        json={
-            "description": "Test description"
-        },
+        json={"description": "Test description"},
     )
     assert response.status_code == 422
 
     # Test empty title
     response = client.post(
         "/api/v1/todos/",
-        json={
-            "title": "",
-            "description": "Test description"
-        },
+        json={"title": "", "description": "Test description"},
     )
     assert response.status_code == 422
+
 
 def test_read_todos(client, sample_todo):
     """Test reading todo list"""
@@ -104,16 +106,14 @@ def test_read_todos(client, sample_todo):
     assert len(data) == 1
     assert data[0]["title"] == sample_todo["title"]
 
+
 def test_read_todos_pagination(client):
     """Test todo list pagination"""
     # Create multiple todos
     for i in range(5):
         client.post(
             "/api/v1/todos/",
-            json={
-                "title": f"Todo {i}",
-                "description": f"Description {i}"
-            },
+            json={"title": f"Todo {i}", "description": f"Description {i}"},
         )
 
     # Test limit
@@ -128,11 +128,13 @@ def test_read_todos_pagination(client):
     assert len(data) == 2
     assert data[0]["title"] == "Todo 2"
 
+
 def test_read_todo(client, sample_todo):
     """Test reading a specific todo"""
     response = client.get(f"/api/v1/todos/{sample_todo['id']}")
     assert response.status_code == 200
     assert response.json() == sample_todo
+
 
 def test_read_todo_not_found(client):
     """Test reading a non-existent todo"""
@@ -140,14 +142,12 @@ def test_read_todo_not_found(client):
     assert response.status_code == 404
     assert response.json()["detail"] == "Todo not found"
 
+
 def test_update_todo(client, sample_todo):
     """Test updating a todo"""
     response = client.patch(
         f"/api/v1/todos/{sample_todo['id']}",
-        json={
-            "title": "Updated todo",
-            "completed": True
-        },
+        json={"title": "Updated todo", "completed": True},
     )
     assert response.status_code == 200
     data = response.json()
@@ -156,27 +156,26 @@ def test_update_todo(client, sample_todo):
     assert data["description"] == sample_todo["description"]
     assert data["updated_at"] != sample_todo["updated_at"]
 
+
 def test_update_todo_not_found(client):
     """Test updating a non-existent todo"""
     response = client.patch(
         "/api/v1/todos/999",
-        json={
-            "title": "Updated todo"
-        },
+        json={"title": "Updated todo"},
     )
     assert response.status_code == 404
     assert response.json()["detail"] == "Todo not found"
+
 
 def test_update_todo_validation(client, sample_todo):
     """Test validation when updating a todo"""
     # Test empty title
     response = client.patch(
         f"/api/v1/todos/{sample_todo['id']}",
-        json={
-            "title": ""
-        },
+        json={"title": ""},
     )
     assert response.status_code == 422
+
 
 def test_delete_todo(client, sample_todo):
     """Test deleting a todo"""
@@ -188,8 +187,9 @@ def test_delete_todo(client, sample_todo):
     response = client.get(f"/api/v1/todos/{sample_todo['id']}")
     assert response.status_code == 404
 
+
 def test_delete_todo_not_found(client):
     """Test deleting a non-existent todo"""
     response = client.delete("/api/v1/todos/999")
     assert response.status_code == 404
-    assert response.json()["detail"] == "Todo not found" 
+    assert response.json()["detail"] == "Todo not found"
