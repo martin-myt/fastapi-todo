@@ -18,7 +18,7 @@ A modern, fast, and production-ready Todo List API built with FastAPI, SQLAlchem
 
 ## Requirements
 
-- Python 3.9+
+- Python 3.13
 - Poetry
 
 ## Installation

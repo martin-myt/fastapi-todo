@@ -38,7 +38,7 @@ Create a production-ready Todo List API using FastAPI, incorporating modern Pyth
 
 ### CI/CD
 - Set up GitHub Actions workflow for automated testing
-- Run tests on multiple Python versions
+- Run tests on Python 3.13
 - Generate and upload coverage reports to Codecov
 - Add status badges to README
 
@@ -47,7 +47,7 @@ Create a production-ready Todo List API using FastAPI, incorporating modern Pyth
 ### Dependencies
 ```toml
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.13"
 fastapi = "^0.110.0"
 uvicorn = "^0.27.1"
 sqlalchemy = "^2.0.27"
