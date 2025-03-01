@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # Development service with hot reload
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - ENVIRONMENT=development
+    command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Production service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+    restart: unless-stopped
+
+  # Test service
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - ENVIRONMENT=test
+    command: poetry run pytest -v --cov=app 
