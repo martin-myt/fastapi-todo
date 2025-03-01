@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Development service with hot reload
   app-dev:
@@ -30,8 +28,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - INSTALL_DEV=true
     volumes:
       - .:/app
     environment:
       - ENVIRONMENT=test
+      - PYTHONPATH=/app
     command: poetry run pytest -v --cov=app 

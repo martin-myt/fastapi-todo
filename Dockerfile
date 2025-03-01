@@ -27,14 +27,14 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 # Copy poetry files
 COPY pyproject.toml poetry.lock ./
 
-# Install dependencies
-RUN poetry install --no-interaction --no-root --no-dev
+# Install dependencies (including dev dependencies for testing)
+RUN poetry install --no-interaction --no-root
 
 # Copy application code
 COPY . .
 
 # Install the application
-RUN poetry install --no-interaction --no-dev
+RUN poetry install --no-interaction
 
 # Expose port
 EXPOSE 8000
