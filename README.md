@@ -2,13 +2,15 @@
 
 [![codecov](https://codecov.io/gh/martin-myt/fastapi-todo/branch/main/graph/badge.svg)](https://codecov.io/gh/martin-myt/fastapi-todo)
 
-A modern, fast, and production-ready Todo List API built with FastAPI, SQLAlchemy, and Poetry.
+A modern, fast, and production-ready Todo List API built with FastAPI, SQLAlchemy, and Poetry, with a React frontend.
 
 ## Features
 
 - RESTful API for managing todo items
 - SQLite database with SQLAlchemy ORM
 - Pydantic models for request/response validation
+- Modern React frontend with TypeScript
+- Tailwind CSS for styling
 - Comprehensive test suite
 - Modern dependency management with Poetry
 - Code quality tools (ruff, black)
@@ -21,11 +23,12 @@ A modern, fast, and production-ready Todo List API built with FastAPI, SQLAlchem
 
 - Python 3.13
 - Poetry
+- Node.js 20+ (for frontend)
 - Docker (optional)
 
 ## Installation
 
-### Local Development
+### Backend Development
 
 1. Clone the repository:
 ```bash
@@ -38,6 +41,18 @@ cd fastapi-todo
 poetry install
 ```
 
+### Frontend Development
+
+1. Navigate to the frontend directory:
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
 ### Docker Development
 
 1. Clone the repository:
@@ -46,24 +61,31 @@ git clone https://github.com/martin-myt/fastapi-todo.git
 cd fastapi-todo
 ```
 
-2. Start the development server with hot reload:
+2. Start both backend and frontend with hot reload:
 ```bash
-docker compose up app-dev
+docker compose up app-dev frontend
 ```
 
 ## Running the Application
 
-### Local
+### Local Development
 
+Backend:
 ```bash
 poetry run uvicorn app.main:app --reload
+```
+
+Frontend:
+```bash
+cd frontend
+npm run dev
 ```
 
 ### Docker
 
 Development (with hot reload):
 ```bash
-docker compose up app-dev
+docker compose up app-dev frontend
 ```
 
 Production:
@@ -72,17 +94,27 @@ docker compose up app
 ```
 
 The API will be available at `http://localhost:8000`
+The frontend will be available at `http://localhost:5173`
 
 ## Running Tests
 
-### Local
+### Backend Tests
+
+Local:
 ```bash
 poetry run pytest -v --cov=app
 ```
 
-### Docker
+Docker:
 ```bash
 docker compose run test
+```
+
+### Frontend Tests
+
+```bash
+cd frontend
+npm test
 ```
 
 ## API Documentation
@@ -93,9 +125,9 @@ Once the application is running, you can access:
 
 ## Docker Commands
 
-Build and start development server:
+Build and start development server with frontend:
 ```bash
-docker compose up app-dev --build
+docker compose up app-dev frontend --build
 ```
 
 Build and start production server:
@@ -103,7 +135,7 @@ Build and start production server:
 docker compose up app --build
 ```
 
-Run tests in Docker:
+Run backend tests in Docker:
 ```bash
 docker compose run test
 ```

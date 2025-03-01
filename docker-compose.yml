@@ -35,4 +35,19 @@ services:
     environment:
       - ENVIRONMENT=test
       - PYTHONPATH=/app
-    command: poetry run pytest -v --cov=app 
+    command: poetry run pytest -v --cov=app
+
+  # Frontend development service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - app-dev 
