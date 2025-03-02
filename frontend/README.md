@@ -1,54 +1,69 @@
-# React + TypeScript + Vite
+# Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend application for the FastAPI Todo project, built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Modern React application with TypeScript
+- Vite for fast development and building
+- Comprehensive test suite using Vitest
+- Integrated logging with loglevel
+- Axios for API communication
 
-## Expanding the ESLint configuration
+## Testing
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The application includes several types of tests:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Integration Tests
+
+Located in `src/__tests__/api.integration.test.ts`, these tests verify:
+- HTTP method usage for CRUD operations
+- Error handling for network and API errors
+- Request configuration and headers
+- API endpoint behavior
+
+### Component Tests
+
+- `src/__tests__/App.test.tsx`: Tests the main App component functionality
+- `src/__tests__/TodoItem.test.tsx`: Tests individual todo item rendering and interactions
+
+### Test Coverage
+
+Run tests with coverage reporting:
+```bash
+npm test -- --coverage
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Logging
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The application uses `loglevel` for logging with different levels:
+- DEBUG: API requests and responses
+- INFO: User actions and operations
+- ERROR: Failed operations and error details
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+Logs include:
+- Timestamps
+- Log levels
+- Operation context
+- Error details when applicable
+
+## Development
+
+1. Install dependencies:
+```bash
+npm install
 ```
+
+2. Start development server:
+```bash
+npm run dev
+```
+
+3. Run tests:
+```bash
+npm test
+```
+
+## Environment Variables
+
+- `VITE_API_URL`: API base URL (defaults to http://localhost:3000/api/v1)

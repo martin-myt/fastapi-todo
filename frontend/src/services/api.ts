@@ -107,7 +107,7 @@ export const api = {
   async updateTodo(id: number, todo: UpdateTodoDto): Promise<Todo> {
     try {
       logger.info('Updating todo', { id, todo });
-      const response = await axiosInstance.put(`/${id}/`, todo);
+      const response = await axiosInstance.patch(`/${id}/`, todo);
       return response.data;
     } catch (error) {
       const message = getErrorMessage(error);
