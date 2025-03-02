@@ -40,4 +40,8 @@ secretGenerator:
 - name: db-credentials
   behavior: merge
   literals:
-  - password=dev-password 
+  - password=dev-password
+
+labels:
+- pairs:
+    environment: development 

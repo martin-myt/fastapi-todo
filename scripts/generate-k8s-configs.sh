@@ -23,7 +23,18 @@ cp -r k8s/* $TEMP_DIR/
 sed -i.bak "s/\${DOCKER_USERNAME}/$DOCKER_USERNAME/g" $TEMP_DIR/base/images-patch.yaml
 sed -i.bak "s/\${VERSION}/$VERSION/g" $TEMP_DIR/base/images-patch.yaml
 
-# Generate the configuration
+# Generate namespace configuration first
+echo "Generating namespace configuration..."
+kubectl kustomize $TEMP_DIR/overlays/$ENVIRONMENT -o $TEMP_DIR/namespace.yaml --load-restrictor LoadRestrictionsNone
+
+# Apply namespace if it doesn't exist
+echo "Ensuring namespace exists..."
+kubectl apply -f $TEMP_DIR/namespace.yaml
+
+# Generate full configuration
+echo "Generating full configuration..."
 kubectl kustomize $TEMP_DIR/overlays/$ENVIRONMENT > k8s/generated-$ENVIRONMENT.yaml
 
-echo "Configuration generated: k8s/generated-$ENVIRONMENT.yaml" 
+echo "Configuration generated: k8s/generated-$ENVIRONMENT.yaml"
+echo "You can now apply the configuration with:"
+echo "kubectl apply -f k8s/generated-$ENVIRONMENT.yaml" 

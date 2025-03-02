@@ -1,4 +1,9 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: fastapi-todo-dev 
+  name: fastapi-todo-dev
+  labels:
+    environment: development
+    app: fastapi-todo
+  annotations:
+    description: "Development environment for FastAPI Todo application" 
