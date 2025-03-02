@@ -13,9 +13,15 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
     volumes:
       - .:/app
-    command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      - ./logs:/app/logs
+    command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --log-level debug
     depends_on:
       - db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Production service
   app:
@@ -29,9 +35,15 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
     volumes:
       - .:/app
+      - ./logs:/app/logs
     restart: unless-stopped
     depends_on:
       - db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Test service
   test:
@@ -41,11 +53,17 @@ services:
       target: test
     volumes:
       - .:/app
+      - ./logs:/app/logs
     command: poetry run pytest
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
     depends_on:
       - db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Frontend development service
   frontend:
@@ -61,6 +79,11 @@ services:
       - VITE_API_URL=http://localhost:3000/api/v1
     depends_on:
       - app-dev
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   db:
     image: postgres:16
@@ -72,6 +95,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   postgres_data: 

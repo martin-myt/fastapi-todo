@@ -1,5 +1,5 @@
 # Use Node.js image
-FROM node:20-slim
+FROM node:18-slim
 
 # Set working directory
 WORKDIR /app
@@ -10,11 +10,11 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-# Copy application code
+# Copy source code
 COPY . .
 
 # Expose port
 EXPOSE 5173
 
 # Start development server
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"] 
+CMD ["npm", "run", "dev"] 
