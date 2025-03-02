@@ -9,6 +9,7 @@ resources:
 - postgres-statefulset.yaml
 - postgres-service.yaml
 - ingress.yaml
+- github-actions-sa.yaml
 
 patchesStrategicMerge:
 - images-patch.yaml

@@ -53,4 +53,7 @@ info.log*
 
 # OS
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# Kubernetes auth files
+k8s/auth/github-actions-kubeconfig.yaml 
