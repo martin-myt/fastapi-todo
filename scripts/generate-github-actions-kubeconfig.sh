@@ -45,9 +45,18 @@ sed -i.bak "s|SERVER_URL_PLACEHOLDER|${SERVER_URL}|" k8s/auth/github-actions-kub
 sed -i.bak "s|TOKEN_PLACEHOLDER|${TOKEN}|" k8s/auth/github-actions-kubeconfig.yaml
 rm -f k8s/auth/github-actions-kubeconfig.yaml.bak
 
+# Validate the kubeconfig
+echo "Validating kubeconfig..."
+KUBECONFIG=k8s/auth/github-actions-kubeconfig.yaml kubectl config view --minify > /dev/null
+
 echo "Kubeconfig generated at k8s/auth/github-actions-kubeconfig.yaml"
 echo ""
 echo "To use this as a GitHub Actions secret, run:"
-echo "cat k8s/auth/github-actions-kubeconfig.yaml | base64 -w 0"
+echo "cat k8s/auth/github-actions-kubeconfig.yaml | tr -d '\n\r' | base64 -w 0"
 echo ""
 echo "Then add the output as a secret named KUBE_CONFIG in your GitHub repository"
+
+# Optional: Show the base64 encoded config directly
+echo ""
+echo "Base64 encoded config:"
+cat k8s/auth/github-actions-kubeconfig.yaml | tr -d '\n\r' | base64 -w 0
