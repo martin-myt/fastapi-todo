@@ -89,19 +89,28 @@ jobs:
     - name: Setup Kubeconfig
       run: |
         mkdir -p $HOME/.kube
-        # Ensure proper line endings and remove any whitespace
-        echo "${{ secrets.KUBE_CONFIG }}" | tr -d '\r' | base64 -d > $HOME/.kube/config
+        # Write the kubeconfig to a temporary file first
+        echo "${{ secrets.KUBE_CONFIG }}" > /tmp/kube_config_b64
+        # Clean any potential corrupted characters
+        tr -cd '[:base64:]\n' < /tmp/kube_config_b64 > /tmp/kube_config_b64_clean
+        # Decode and write to the final location
+        base64 -d /tmp/kube_config_b64_clean > $HOME/.kube/config
         chmod 600 $HOME/.kube/config
-        # Debug: Check if the file is valid YAML (but hide sensitive data)
-        echo "Validating kubeconfig format..."
-        kubectl config view --minify --flatten
+        # Clean up
+        rm -f /tmp/kube_config_b64 /tmp/kube_config_b64_clean
+        # Debug: Show cluster info (without sensitive data)
+        echo "Testing connection to cluster..."
+        kubectl cluster-info
 
     - name: Ensure namespace exists
       run: |
-        echo "Current kubectl context:"
-        kubectl config current-context || true
         echo "Creating namespace if it doesn't exist..."
-        kubectl create namespace fastapi-todo-dev --dry-run=client -o yaml | kubectl apply -f -
+        cat << EOF | kubectl apply -f -
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+          name: fastapi-todo-dev
+        EOF
 
     - name: Generate Kubernetes configurations
       run: |

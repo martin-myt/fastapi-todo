@@ -18,14 +18,14 @@ SERVER_URL=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.ser
 TOKEN=$(kubectl create token github-actions -n fastapi-todo-dev)
 
 # Create the kubeconfig file
-cat > k8s/auth/github-actions-kubeconfig.yaml << 'EOF'
+cat > k8s/auth/github-actions-kubeconfig.yaml << EOF
 apiVersion: v1
 kind: Config
 clusters:
 - name: kubernetes
   cluster:
-    certificate-authority-data: CLUSTER_CA_PLACEHOLDER
-    server: SERVER_URL_PLACEHOLDER
+    certificate-authority-data: ${CLUSTER_CA}
+    server: ${SERVER_URL}
 contexts:
 - name: github-actions@kubernetes
   context:
@@ -36,27 +36,27 @@ current-context: github-actions@kubernetes
 users:
 - name: github-actions
   user:
-    token: TOKEN_PLACEHOLDER
+    token: ${TOKEN}
 EOF
-
-# Replace placeholders
-sed -i.bak "s|CLUSTER_CA_PLACEHOLDER|${CLUSTER_CA}|" k8s/auth/github-actions-kubeconfig.yaml
-sed -i.bak "s|SERVER_URL_PLACEHOLDER|${SERVER_URL}|" k8s/auth/github-actions-kubeconfig.yaml
-sed -i.bak "s|TOKEN_PLACEHOLDER|${TOKEN}|" k8s/auth/github-actions-kubeconfig.yaml
-rm -f k8s/auth/github-actions-kubeconfig.yaml.bak
 
 # Validate the kubeconfig
 echo "Validating kubeconfig..."
-KUBECONFIG=k8s/auth/github-actions-kubeconfig.yaml kubectl config view --minify > /dev/null
+if KUBECONFIG=k8s/auth/github-actions-kubeconfig.yaml kubectl cluster-info >/dev/null 2>&1; then
+  echo "Kubeconfig validation successful!"
+else
+  echo "Error: Kubeconfig validation failed!"
+  exit 1
+fi
 
 echo "Kubeconfig generated at k8s/auth/github-actions-kubeconfig.yaml"
 echo ""
 echo "To use this as a GitHub Actions secret, run:"
-echo "cat k8s/auth/github-actions-kubeconfig.yaml | tr -d '\n\r' | base64 -w 0"
+echo "cat k8s/auth/github-actions-kubeconfig.yaml | base64 | tr -d '\n\r' > k8s/auth/kubeconfig.b64"
+echo "cat k8s/auth/kubeconfig.b64 # Copy this output as your GitHub secret"
 echo ""
-echo "Then add the output as a secret named KUBE_CONFIG in your GitHub repository"
 
-# Optional: Show the base64 encoded config directly
-echo ""
-echo "Base64 encoded config:"
-cat k8s/auth/github-actions-kubeconfig.yaml | tr -d '\n\r' | base64 -w 0
+# Generate the base64 encoded config
+base64 < k8s/auth/github-actions-kubeconfig.yaml | tr -d '\n\r' > k8s/auth/kubeconfig.b64
+echo "Base64 encoded config has been saved to k8s/auth/kubeconfig.b64"
+echo "Content of base64 encoded config:"
+cat k8s/auth/kubeconfig.b64
