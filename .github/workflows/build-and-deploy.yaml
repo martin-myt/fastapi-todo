@@ -14,6 +14,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
     permissions:
       contents: read
       packages: write
@@ -84,17 +86,22 @@ jobs:
         curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
         sudo mv kustomize /usr/local/bin/
 
-    - name: Configure Kubernetes context
-      uses: azure/k8s-set-context@v3
-      with:
-        method: kubeconfig
-        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+    - name: Setup Kubeconfig
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+        chmod 600 $HOME/.kube/config
+
+    - name: Ensure namespace exists
+      run: |
+        if ! kubectl get namespace fastapi-todo-dev &>/dev/null; then
+          kubectl create namespace fastapi-todo-dev
+        fi
 
     - name: Generate Kubernetes configurations
       run: |
-        VERSION=${{ steps.meta.outputs.version }}
         DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} \
-        VERSION=${VERSION:-latest} \
+        VERSION=${{ needs.build.outputs.version }} \
         ENVIRONMENT=dev \
         ./scripts/generate-k8s-configs.sh
 
