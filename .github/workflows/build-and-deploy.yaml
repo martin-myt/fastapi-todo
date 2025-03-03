@@ -91,8 +91,8 @@ jobs:
         mkdir -p $HOME/.kube
         # Write the kubeconfig to a temporary file first
         echo "${{ secrets.KUBE_CONFIG }}" > /tmp/kube_config_b64
-        # Clean any potential corrupted characters
-        tr -cd '[:base64:]\n' < /tmp/kube_config_b64 > /tmp/kube_config_b64_clean
+        # Clean any potential corrupted characters (only keep valid base64 characters)
+        tr -cd 'A-Za-z0-9+/=' < /tmp/kube_config_b64 > /tmp/kube_config_b64_clean
         # Decode and write to the final location
         base64 -d /tmp/kube_config_b64_clean > $HOME/.kube/config
         chmod 600 $HOME/.kube/config
